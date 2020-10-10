@@ -20,5 +20,6 @@
 #define DELAY_LED_CONTROL 30 //ゆらぎデータを進める速度
 #define BIAS_BRIGHTNESS 100 //照度決定の数式（バイアス）
 #define DIAMETER_BRIGHTNESS 0.5 //照度決定の数式（倍率）
+#define THRETHOLD_JUDGE 0.8 //人検知とする認識率0~1
 
 #define DEBUG_MODE 0 //デバッグモード実行 YES=1
