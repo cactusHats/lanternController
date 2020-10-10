@@ -87,6 +87,14 @@ void setupSensorMode() {
 #endif
 }
 
+//センサの計測を開始する関数
+void startSensor() {
+  sensorR.startContinuous();
+  sensorF.startContinuous();
+  sensorL.startContinuous();
+  sensorB.startContinuous();
+}
+
 //エラー出力する関数
 void error(String message) {
 #if DEBUG_MODE
@@ -154,7 +162,7 @@ int checkDistance(int* fixedDistance) {
 
 //データを平滑化する関数
 double smoothing(double* data, int newData) {
-  double ave = 0.0;  
+  double ave = 0.0;
   //平滑化処理
   for (int i = 0; i < 19; i++)
     data[19 - i] = data[19 - i - 1];
@@ -164,6 +172,6 @@ double smoothing(double* data, int newData) {
   for (int i = 0; i < 20; i++)
     ave += data[i];
   ave /= 20.0;
-  
+
   return ave;
 }
