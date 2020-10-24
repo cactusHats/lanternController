@@ -18,8 +18,15 @@
 
 #define NUM_LED_DATA_SET 400 //ゆらぎデータの数
 #define DELAY_LED_CONTROL 30 //ゆらぎデータを進める速度
-#define BIAS_BRIGHTNESS 100 //照度決定の数式（バイアス）
-#define DIAMETER_BRIGHTNESS 0.5 //照度決定の数式（倍率）
+#define BIAS_BRIGHTNESS 50 //照度決定の数式（バイアス）
+#define DIAMETER_BRIGHTNESS 0.7 //照度決定の数式（倍率）
 #define THRETHOLD_JUDGE 0.8 //人検知とする認識率0~1
 
 #define DEBUG_MODE 0 //デバッグモード実行 YES=1
+
+#define DELAY_LED_CHANGE 1 //LEDの照度変化の速度
+
+#define SENSOR_ACTIVE_F 1 //このセンサを有効にする YES=1
+#define SENSOR_ACTIVE_R 1
+#define SENSOR_ACTIVE_B 1
+#define SENSOR_ACTIVE_L 1

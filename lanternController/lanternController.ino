@@ -22,15 +22,16 @@ int ledControlData[] = {
 int rawDistance[4] = {0};
 int fixedDistance[4] = {0};
 int elementNum = 0; //ゆらぎデータの要素数
-int rawIlluminance = 100; //Unityから送られる照度0~100%
+int tgtIlluminance = 100; //Unityから送られる照度0~100%
+int crtIlluminance = 0; //現在の照度;
 bool humanDetected = false;
 double illuminanceRate = 0.0; //修正後の照度
-double timeThen = 0.0; //最後にLEDの照度を更新した時間
 double record[20] = {0}; //平滑化用データ保持配列
 double recognitionRate = 0.0; //平滑化後の認識率 0~1
+int activeSensor[4] = {SENSOR_ACTIVE_B, SENSOR_ACTIVE_L, SENSOR_ACTIVE_F, SENSOR_ACTIVE_R};
 
 void setup() {
-  Serial.begin(19200);
+  Serial.begin(9600);
 
   setupPinMode(); //ポート設定
   Wire.begin();
@@ -52,16 +53,30 @@ void loop() {
   recognitionRate = smoothing(record, humanDetected); //平滑化処理
 
   //検知データの送信
-  if (recognitionRate > THRETHOLD_JUDGE)
-    Serial.write(0x01);
-  else
-    Serial.write(0x00);
+  if (recognitionRate > THRETHOLD_JUDGE) {
+    Serial.print(1);
+    Serial.print("\t");
+    Serial.println();
+  }
+  else {
+    Serial.print(0);
+    Serial.print("\t");
+    Serial.println();
+  }
 
   //照度データの受信
   if (Serial.available() > 0) {
-    rawIlluminance = Serial.read();
+    char tmp = Serial.read();
+    int mode = tmp - '0'; //文字型から整数型に変換
+
+    switch (mode) {
+      case 0: tgtIlluminance = 0; break;
+      case 1: tgtIlluminance = 100; break;
+      default: break;
+    }
   }
-  fixIlluminance(rawIlluminance, illuminanceRate); //外れ値の除外
+  crtIlluminance = targetGeneration(crtIlluminance, tgtIlluminance, DELAY_LED_CHANGE); //目標値の遷移
+  fixIlluminance(crtIlluminance, illuminanceRate); //外れ値の除外
   ledControl(ledControlData, elementNum, illuminanceRate); //LEDの制御
 
   delay(10);

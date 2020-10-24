@@ -106,6 +106,7 @@ void error(String message) {
 
 //LEDを指定の明るさで点灯する関数
 void ledControl(int* ledControlData, int &elementNum, float illuminance) {
+  static long timeThen = 0;
   //一定時間おきにLEDの明るさを更新
   if (millis() - timeThen > DELAY_LED_CONTROL) {
     int brightness = int((double(ledControlData[elementNum] * DIAMETER_BRIGHTNESS) + BIAS_BRIGHTNESS) * illuminance);
@@ -154,7 +155,7 @@ void fixDistance(int* rawDistance, int* fixedDistance) {
 int checkDistance(int* fixedDistance) {
   //4つのうち1つでも閾値以下なら1を返す
   for (int i = 0; i < NUM_SENSOR; i++) {
-    if (rawDistance[i] < RESPONSE_DISTANCE)
+    if (rawDistance[i] < RESPONSE_DISTANCE && activeSensor[i])
       return 1;
   }
   return 0;
@@ -174,4 +175,21 @@ double smoothing(double* data, int newData) {
   ave /= 20.0;
 
   return ave;
+}
+
+//LEDの明るさをゆっくり変化させる関数
+int targetGeneration(int t_crtIlluminance, int tgtIlluminance, int c_delay) {
+  static long timeThen = 0; //前回関数に入った時間
+  if (millis() - timeThen > c_delay) {
+    if (crtIlluminance == tgtIlluminance) {
+    }
+    else if (crtIlluminance > tgtIlluminance) {
+      t_crtIlluminance-=2;
+    }
+    else if (crtIlluminance < tgtIlluminance) {
+      t_crtIlluminance+=2;
+    }
+  }
+  timeThen = millis();
+  return t_crtIlluminance;
 }
